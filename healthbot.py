@@ -10,10 +10,10 @@ MediTech Solutions - LangGraph Workflow Implementation
 from dotenv import load_dotenv
 import os
 
-# Load in the Cohere key and Tavily key.
+# Load OpenAI and Tavily API keys.
 load_dotenv('config.env')
 
-assert os.getenv('COHERE_API_KEY') is not None, "COHERE_API_KEY not found in config.env"
+assert os.getenv('OPENAI_API_KEY') is not None, "OPENAI_API_KEY not found in config.env"
 assert os.getenv('TAVILY_API_KEY') is not None, "TAVILY_API_KEY not found in config.env"
 
 print("✅ API keys loaded successfully.")
@@ -26,7 +26,7 @@ print("✅ API keys loaded successfully.")
 from typing import TypedDict, Optional, Annotated
 from langgraph.graph import StateGraph, END
 from langgraph.graph.message import add_messages
-from langchain_cohere import ChatCohere
+from langchain_openai import ChatOpenAI
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage
 
@@ -70,11 +70,11 @@ class HealthBotState(TypedDict):
 # CELL 4: Initialize Model and Tavily Tool
 # ============================================================
 
-# Initialize the Cohere chat model (free trial tier compatible)
-llm = ChatCohere(
-    model="command-r-08-2024",
+# Initialize the OpenAI chat model
+llm = ChatOpenAI(
+    model="gpt-4o-mini",
     temperature=0.3,
-    cohere_api_key=os.getenv("COHERE_API_KEY"),
+    api_key=os.getenv("OPENAI_API_KEY"),
 )
 
 # Initialize Tavily search tool (focuses on reputable medical sources)
@@ -96,7 +96,7 @@ tavily_tool = TavilySearchResults(
     tavily_api_key=os.getenv("TAVILY_API_KEY")
 )
 
-print("✅ Cohere model and Tavily tool initialized.")
+print("✅ OpenAI model and Tavily tool initialized.")
 
 
 # ============================================================
